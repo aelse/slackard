@@ -78,8 +78,8 @@ class Slackard(object):
             for message in messages:
                 ts = float(message['ts'])
                 print message['text']
-                for firehose in self.firehoses:
-                    firehose(message['text'])
+                for f in self.firehoses:
+                    f(self, message['text'])
 
     def subscribe(self, wrapped, message_prefix):
         @functools.wraps(wrapped)
