@@ -53,8 +53,12 @@ class Slackard(object):
         c_map = {c['name']: c['id'] for c in r.body['channels']}
         self.chan_id = c_map[self.channel]
 
-    def _fetch_latest_messages(self, since=None):
-        r = self.slack.channels.history(self.chan_id)
+    def _fetch_messages_since(self, oldest=None):
+        h = self.slack.channels.history(self.chan_id, oldest=oldest)
+        assert(h.successful)
+        messages = h.body['messages']
+        messages.reverse()
+        return [m for m in messages if float(m['ts']) != oldest]
 
     def say(self, message):
         self.slack.chat.post_message(self.channel, message,
@@ -63,34 +67,26 @@ class Slackard(object):
 
     def run(self):
         self._init_connection()
+        self._import_plugins()
 
         h = self.slack.channels.history(self.chan_id, count=1)
         assert(h.successful)
         ts = float(h.body['messages'][0]['ts'])
-        print 'Found initial ts {0}'.format(ts)
         t0 = time.time()
 
         while True:
             t1 = time.time()
             delta_t = t1 - t0
-            if delta_t < 10.0:
-                print 'sleep {0}'.format(10.0 - delta_t)
-                time.sleep(10.0 - delta_t)
-            else:
-                print 'no sleep'
-            t0 = t1
+            if delta_t < 5.0:
+                time.sleep(5.0 - delta_t)
+            t0 = time.time()
 
-            h = self.slack.channels.history(self.chan_id, oldest=ts)
-            assert(h.successful)
-            ts = float(h.body['messages'][0]['ts'])
-            print 'Found new ts {0}'.format(ts)
-            messages = h.body['messages']
-            messages.reverse()
+            messages = self._fetch_messages_since(ts)
             for message in messages:
-                if float(message['ts']) != ts:
-                    print message['text']
-                    for firehose in self.firehoses:
-                        firehose(message['text'])
+                ts = float(message['ts'])
+                print message['text']
+                for firehose in self.firehoses:
+                    firehose(message['text'])
 
     def subscribe(self, wrapped, message_prefix):
         @functools.wraps(wrapped)
