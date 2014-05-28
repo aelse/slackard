@@ -8,9 +8,6 @@ from glob import glob
 import time
 
 
-bot = None
-
-
 class Config(object):
     config = {}
 
@@ -35,17 +32,12 @@ class Slackard(object):
         self.boticon = self.config.slackard['boticon']
         self.channel = self.config.slackard['channel']
 
-        self._import_plugins()
-
     def __str__(self):
         return 'I am a Slackard!'
 
     def _import_plugins(self):
-        for plugin in glob('plugins/[!_]*.py'):
-            try:
-                importlib.import_module(plugin.replace('/', '.')[:-3])
-            except:
-                print 'Failed to import {0}'.format(plugin)
+        import plugins
+        plugins.init_plugins(self)
 
     def _init_connection(self):
         self.slack = slacker.Slacker(self.apikey)
