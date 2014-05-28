@@ -80,7 +80,7 @@ class Slackard(object):
                 if 'text' in message:
                     print message['text']
                     for f in self.firehoses:
-                        f(self, message['text'])
+                        f(message['text'])
 
     def subscribe(self, wrapped, message_prefix):
         @functools.wraps(wrapped)

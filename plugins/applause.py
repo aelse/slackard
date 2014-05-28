@@ -2,7 +2,7 @@ from plugins import bot
 import re
 
 @bot.firehose
-def listen(bot, message):
+def listen(message):
     # Attempt to strip out URLs
     message= re.sub('(https?|ftp)://\S+', '', message)
 
