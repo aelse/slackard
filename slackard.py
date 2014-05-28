@@ -77,9 +77,10 @@ class Slackard(object):
             messages = self._fetch_messages_since(ts)
             for message in messages:
                 ts = float(message['ts'])
-                print message['text']
-                for f in self.firehoses:
-                    f(self, message['text'])
+                if 'text' in message:
+                    print message['text']
+                    for f in self.firehoses:
+                        f(self, message['text'])
 
     def subscribe(self, wrapped, message_prefix):
         @functools.wraps(wrapped)
