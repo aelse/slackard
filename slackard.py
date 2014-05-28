@@ -32,6 +32,7 @@ class Slackard(object):
         self.apikey = self.config.slackard['apikey']
         self.botname = self.config.slackard['botname']
         self.botnick = self.config.slackard['botnick']
+        self.boticon = self.config.slackard['boticon']
         self.channel = self.config.slackard['channel']
 
         self._import_plugins()
@@ -61,9 +62,9 @@ class Slackard(object):
         return [m for m in messages if float(m['ts']) != oldest]
 
     def say(self, message):
-        self.slack.chat.post_message(self.channel, message,
-                                     username=self.bot_name,
-                                     icon_url=self.bot_icon)
+        self.slack.chat.post_message(self.chan_id, message,
+                                     username=self.botname,
+                                     icon_url=self.boticon)
 
     def run(self):
         self._init_connection()
