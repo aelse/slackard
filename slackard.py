@@ -109,7 +109,7 @@ class Slackard(object):
         return real_subscribe
 
     def command(self, command):
-        if hasattr(pattern, '__call__'):
+        if hasattr(command, '__call__'):
             raise TypeError('Must supply command string')
         def real_command(wrapped):
             @functools.wraps(wrapped)
