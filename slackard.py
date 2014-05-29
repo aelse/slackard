@@ -52,7 +52,9 @@ class Slackard(object):
         messages.reverse()
         return [m for m in messages if m['ts'] != oldest]
 
-    def speak(self, message):
+    def speak(self, message, paste=False):
+        if paste:
+            message = '```{0}```'.format(message)
         self.slack.chat.post_message(self.chan_id, message,
                                      username=self.botname,
                                      icon_url=self.boticon)
