@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
 import functools
+import re
 import slacker
-import yaml
-import importlib
-from glob import glob
 import time
+import yaml
 
 
 class Config(object):
