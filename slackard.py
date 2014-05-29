@@ -51,7 +51,7 @@ class Slackard(object):
         assert(h.successful)
         messages = h.body['messages']
         messages.reverse()
-        return [m for m in messages if float(m['ts']) != oldest]
+        return [m for m in messages if m['ts'] != oldest]
 
     def say(self, message):
         self.slack.chat.post_message(self.chan_id, message,
@@ -64,7 +64,7 @@ class Slackard(object):
 
         h = self.slack.channels.history(self.chan_id, count=1)
         assert(h.successful)
-        ts = float(h.body['messages'][0]['ts'])
+        ts = h.body['messages'][0]['ts']
         t0 = time.time()
 
         while True:
@@ -76,7 +76,7 @@ class Slackard(object):
 
             messages = self._fetch_messages_since(ts)
             for message in messages:
-                ts = float(message['ts'])
+                ts = message['ts']
                 if 'text' in message:
                     print message['text']
                     for f in self.firehoses:
