@@ -10,4 +10,4 @@ def listen(message):
     m = re.search(pattern, message, re.IGNORECASE)
     if m:
         image = 'http://i.imgur.com/9Zv4V.gif'
-        bot.say(image)
+        bot.speak(image)

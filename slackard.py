@@ -53,7 +53,7 @@ class Slackard(object):
         messages.reverse()
         return [m for m in messages if m['ts'] != oldest]
 
-    def say(self, message):
+    def speak(self, message):
         self.slack.chat.post_message(self.chan_id, message,
                                      username=self.botname,
                                      icon_url=self.boticon)
