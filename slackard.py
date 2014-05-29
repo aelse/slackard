@@ -61,6 +61,8 @@ class Slackard(object):
         self._init_connection()
         self._import_plugins()
 
+        cmd_matcher = re.compile('^{0}:\s*(\S+)\s*(.*)'.format(
+                                 self.botnick), re.IGNORECASE)
         h = self.slack.channels.history(self.chan_id, count=1)
         assert(h.successful)
         ts = h.body['messages'][0]['ts']
@@ -80,22 +82,43 @@ class Slackard(object):
                     print message['text']
                     for f in self.firehoses:
                         f(message['text'])
+                    for (f, matcher) in self.subscribers:
+                        if matcher.search(message['text']):
+                            f(message['text'])
+                    m = cmd_matcher.match(message['text'])
+                    if m:
+                        cmd, args = m.groups()
+                        for (f, command) in self.commands:
+                            if command == cmd:
+                                f(args)
 
-    def subscribe(self, wrapped, message_prefix):
-        @functools.wraps(wrapped)
-        def _f(*args, **kwargs):
-            return wrapped(*args, **kwargs)
+    def subscribe(self, pattern):
+        if hasattr(pattern, '__call__'):
+            raise TypeError('Must supply pattern string')
+        def real_subscribe(wrapped):
+            @functools.wraps(wrapped)
+            def _f(*args, **kwargs):
+                return wrapped(*args, **kwargs)
 
-        self.subscribers.append((_f, message_prefix))
-        return _f
+            try:
+                matcher = re.compile(pattern, re.IGNORECASE)
+                self.subscribers.append((_f, matcher))
+            except:
+                print 'Failed to compile matcher for {0}'.format(wrapped)
+            return _f
+        return real_subscribe
 
-    def command(self, wrapped, command):
-        @functools.wraps(wrapped)
-        def _f(*args, **kwargs):
-            return wrapped(*args, **kwargs)
+    def command(self, command):
+        if hasattr(pattern, '__call__'):
+            raise TypeError('Must supply command string')
+        def real_command(wrapped):
+            @functools.wraps(wrapped)
+            def _f(*args, **kwargs):
+                return wrapped(*args, **kwargs)
 
-        self.commands.append((_f, command))
-        return _f
+            self.commands.append((_f, command))
+            return _f
+        return real_command
 
     def firehose(self, wrapped):
         @functools.wraps(wrapped)
