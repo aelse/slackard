@@ -5,6 +5,12 @@ A Slack bot (slack.com)
 Slackard listens to the configured channel and is capable of responding to
 message events occurring in that channel.
 
+## Configuration
+
+See the included slackard.yaml configuration file for supported options.
+All are required except boticon and botemoji, which are both optional. If
+both are provided then botemoji will override boticon (per the Slack API).
+
 ## Plugins
 
 A basic plugin system enables you to add whatever functionality you need to
