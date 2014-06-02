@@ -104,6 +104,7 @@ class Slackard(object):
     def subscribe(self, pattern):
         if hasattr(pattern, '__call__'):
             raise TypeError('Must supply pattern string')
+
         def real_subscribe(wrapped):
             @functools.wraps(wrapped)
             def _f(*args, **kwargs):
@@ -115,11 +116,13 @@ class Slackard(object):
             except:
                 print 'Failed to compile matcher for {0}'.format(wrapped)
             return _f
+
         return real_subscribe
 
     def command(self, command):
         if hasattr(command, '__call__'):
             raise TypeError('Must supply command string')
+
         def real_command(wrapped):
             @functools.wraps(wrapped)
             def _f(*args, **kwargs):
@@ -127,6 +130,7 @@ class Slackard(object):
 
             self.commands.append((_f, command))
             return _f
+
         return real_command
 
     def firehose(self, wrapped):
