@@ -81,6 +81,13 @@ class Slackard(object):
             for message in messages:
                 ts = message['ts']
                 if 'text' in message:
+                    # Skip actions on self-produced messages.
+                    try:
+                        if (message['subtype'] == 'bot_message' and
+                                message['username'] == self.botname):
+                            continue
+                    except KeyError:
+                        pass
                     print message['text']
                     for f in self.firehoses:
                         f(message['text'])
