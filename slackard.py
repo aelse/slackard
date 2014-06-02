@@ -28,8 +28,15 @@ class Slackard(object):
         self.apikey = self.config.slackard['apikey']
         self.botname = self.config.slackard['botname']
         self.botnick = self.config.slackard['botnick']
-        self.boticon = self.config.slackard['boticon']
         self.channel = self.config.slackard['channel']
+        try:
+            self.boticon = self.config.slackard['boticon']
+        except:
+            self.boticon = None
+        try:
+            self.botemoji = ':{0}:'.format(self.config.slackard['botemoji'])
+        except:
+            self.botemoji = None
 
     def __str__(self):
         return 'I am a Slackard!'
@@ -57,6 +64,7 @@ class Slackard(object):
             message = '```{0}```'.format(message)
         self.slack.chat.post_message(self.chan_id, message,
                                      username=self.botname,
+                                     icon_emoji=self.botemoji,
                                      icon_url=self.boticon)
 
     def run(self):
