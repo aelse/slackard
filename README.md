@@ -21,7 +21,7 @@ Slackard provides decorators supporting 3 types of registration to suit your
 need. In all cases the only messages passed will be those not produced by
 the bot itself. This is to avoid getting stuck in message read-respond loops.
 
-Examples are include in the plugins directory.
+Examples are included in the plugins directory.
 
 ### Command
 
