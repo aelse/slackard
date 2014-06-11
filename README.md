@@ -30,12 +30,31 @@ name. eg. If the configuration set a botnick of 'slack', then
 'slack: say Hello world' would pass 'Hello world' to anything that has
 subscribed to the command 'say'.
 
+```python
+@bot.command('say')
+def command_say(args):
+    bot.speak('You asked me to say, "{0}"'.format(args))
+```
+
 ### Subscribe
 
 The plugin subscribes to a particular pattern. This is any pattern that can
 be passed through re.compile, and is applied to each message received by the
 bot. If a message matches then the entire message is passed.
 
+```python
+@bot.subscribe('cookie')
+def sub_cookie(message):
+    bot.speak('I see a cookie in "{0}"'.format(message))
+```
+
 ### Firehose
 
 The plugin receives a full feed of channel traffic.
+
+```python
+@bot.firehose
+def listen(message):
+    # Do something with `message`
+    pass
+```
