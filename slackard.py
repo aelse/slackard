@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 import functools
 import re
 import slacker
@@ -96,7 +98,7 @@ class Slackard(object):
                             continue
                     except KeyError:
                         pass
-                    print message['text']
+                    print(message['text'])
                     for f in self.firehoses:
                         f(message['text'])
                     for (f, matcher) in self.subscribers:
@@ -122,7 +124,7 @@ class Slackard(object):
                 matcher = re.compile(pattern, re.IGNORECASE)
                 self.subscribers.append((_f, matcher))
             except:
-                print 'Failed to compile matcher for {0}'.format(wrapped)
+                print('Failed to compile matcher for {0}'.format(wrapped))
             return _f
 
         return real_subscribe
