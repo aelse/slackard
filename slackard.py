@@ -69,6 +69,15 @@ class Slackard(object):
                                      icon_emoji=self.botemoji,
                                      icon_url=self.boticon)
 
+    def upload(self, file, filename=None, title=None):
+        channels = self.chan_id
+        if title is None:
+            title = ''
+        title = '{} (Upload by {})'.format(title, self.botname)
+        self.slack.files.upload(file, channels=channels,
+                                filename=filename,
+                                title=title)
+
     def run(self):
         self._init_connection()
         self._import_plugins()
