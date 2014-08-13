@@ -15,6 +15,7 @@ class Config(object):
     config = {}
 
     def __init__(self, file_):
+        self.file = file_
         f = open(file_, 'r')
         y = yaml.load(f)
         f.close()
@@ -33,6 +34,7 @@ class Slackard(object):
         self.botname = self.config.slackard['botname']
         self.botnick = self.config.slackard['botnick']
         self.channel = self.config.slackard['channel']
+        self.plugins = self.config.slackard['plugins']
         try:
             self.boticon = self.config.slackard['boticon']
         except:
@@ -46,8 +48,18 @@ class Slackard(object):
         return 'I am a Slackard!'
 
     def _import_plugins(self):
+        self._set_import_path()
         import plugins
         plugins.init_plugins(self)
+
+    def _set_import_path(self):
+        path = self.plugins
+        cf = self.config.file
+        if path[0] != '/':
+            path = os.path.join(
+                    os.path.dirname(os.path.realpath(cf)), path)
+        if path not in sys.path:
+            sys.path.append(path)
 
     def _init_connection(self):
         self.slack = slacker.Slacker(self.apikey)
@@ -173,6 +185,7 @@ def usage():
         # Use either boticon or botemoji
         boticon: http://i.imgur.com/IwtcgFm.png
         botemoji: boom
+        plugins: ./  # 'plugins' directory relative to config, or absolute
     """
     print('Usage: slackard <config.yaml>')
     print('\nExample YAML\n{}'.format(yaml_template))
