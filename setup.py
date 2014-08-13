@@ -6,8 +6,8 @@ setup(
     name='slackard',
     license='BSD',
     py_modules=['slackard'],
-    version='1.0.0',
-    install_requires=['requests', 'slacker'],
+    version='1.0.1',
+    install_requires=['PyYAML', 'requests', 'slacker'],
 
     description='A pluggable bot for slack.com',
     long_description='See https://github.com/aelse/slackard',
