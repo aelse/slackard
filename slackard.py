@@ -195,7 +195,7 @@ def main():
         sys.exit(1)
 
     try:
-        bot = Slackard('slackard.yaml')
+        bot = Slackard(config_file)
         bot.run()
     except Exception as e:
         print('Encountered error: {}'.format(e.message))
