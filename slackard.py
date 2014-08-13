@@ -3,8 +3,10 @@
 from __future__ import print_function
 
 import functools
+import os.path
 import re
 import slacker
+import sys
 import time
 import yaml
 
@@ -161,9 +163,43 @@ class Slackard(object):
         return _f
 
 
+def usage():
+    yaml_template = """
+    slackard:
+        apikey: my_api_key_from-api.slack.com
+        channel: random
+        botname: Slackard
+        botnick: slack  # short form name for commands.
+        # Use either boticon or botemoji
+        boticon: http://i.imgur.com/IwtcgFm.png
+        botemoji: boom
+    """
+    print('Usage: {} <config.yaml>'.format(sys.argv[0]))
+    print('\nExample YAML\n{}'.format(yaml_template))
+
+
 def main():
-    bot = Slackard('slackard.yaml')
-    bot.run()
+
+    config_file = None
+    try:
+        config_file = sys.argv[1]
+    except IndexError:
+        pass
+
+    if config_file is None:
+        usage()
+        sys.exit(1)
+
+    if not os.path.isfile(config_file):
+        print('Config file "{}" not found.'.format(config_file))
+        sys.exit(1)
+
+    try:
+        bot = Slackard('slackard.yaml')
+        bot.run()
+    except Exception as e:
+        print('Encountered error: {}'.format(e.message))
+        sys.exit(1)
 
 
 if __name__ == '__main__':
