@@ -174,7 +174,7 @@ def usage():
         boticon: http://i.imgur.com/IwtcgFm.png
         botemoji: boom
     """
-    print('Usage: {} <config.yaml>'.format(sys.argv[0]))
+    print('Usage: slackard <config.yaml>')
     print('\nExample YAML\n{}'.format(yaml_template))
 
 
