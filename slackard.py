@@ -51,10 +51,12 @@ class Slackard(object):
 
     def _import_plugins(self):
         self._set_import_path()
-        import plugins
-        plugins.bot = self
-
         plugin_prefix = os.path.split(self.plugins)[-1]
+
+        # Import the plugins submodule (however named) and set the
+        # bot object in it to self
+        importlib.import_module(plugin_prefix)
+        sys.modules[plugin_prefix].bot = self
 
         for plugin in glob('{}/[!_]*.py'.format(self.plugins)):
             module = '.'.join((plugin_prefix, os.path.split(plugin)[-1][:-3]))
