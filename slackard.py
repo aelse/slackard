@@ -2,7 +2,9 @@
 
 from __future__ import print_function
 
+from glob import glob
 import functools
+import importlib
 import os.path
 import re
 import slacker
@@ -50,14 +52,27 @@ class Slackard(object):
     def _import_plugins(self):
         self._set_import_path()
         import plugins
-        plugins.init_plugins(self)
+        plugins.bot = self
 
-    def _set_import_path(self):
+        plugin_prefix = os.path.split(self.plugins)[-1]
+
+        for plugin in glob('{}/[!_]*.py'.format(self.plugins)):
+            module = '.'.join((plugin_prefix, os.path.split(plugin)[-1][:-3]))
+            try:
+                importlib.import_module(module)
+            except Exception as e:
+                print('Failed to import {0}: {1}'.format(module, e))
+
+    def _get_plugin_path(self):
         path = self.plugins
         cf = self.config.file
         if path[0] != '/':
             path = os.path.join(
                     os.path.dirname(os.path.realpath(cf)), path)
+        return path
+
+    def _set_import_path(self):
+        path = self._get_plugin_path
         if path not in sys.path:
             sys.path.append(path)
 
