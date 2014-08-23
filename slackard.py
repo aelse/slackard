@@ -58,7 +58,7 @@ class Slackard(object):
         importlib.import_module(plugin_prefix)
         sys.modules[plugin_prefix].bot = self
 
-        for plugin in glob('{}/[!_]*.py'.format(self.plugins)):
+        for plugin in glob('{}/[!_]*.py'.format(self._get_plugin_path())):
             module = '.'.join((plugin_prefix, os.path.split(plugin)[-1][:-3]))
             try:
                 importlib.import_module(module)
