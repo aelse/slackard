@@ -69,8 +69,7 @@ class Slackard(object):
         path = self.plugins
         cf = self.config.file
         if path[0] != '/':
-            path = os.path.join(
-                    os.path.dirname(os.path.realpath(cf)), path)
+            path = os.path.join(os.path.dirname(os.path.realpath(cf)), path)
         return path
 
     def _set_import_path(self):
