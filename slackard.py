@@ -74,7 +74,7 @@ class Slackard(object):
         return path
 
     def _set_import_path(self):
-        path = self._get_plugin_path
+        path = self._get_plugin_path()
         if path not in sys.path:
             sys.path = [path] + sys.path
 
