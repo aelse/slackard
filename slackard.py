@@ -74,7 +74,7 @@ class Slackard(object):
     def _set_import_path(self):
         path = self._get_plugin_path
         if path not in sys.path:
-            sys.path.append(path)
+            sys.path = [path] + sys.path
 
     def _init_connection(self):
         self.slack = slacker.Slacker(self.apikey)
