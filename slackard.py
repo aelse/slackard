@@ -204,7 +204,9 @@ def usage():
         # Use either boticon or botemoji
         boticon: http://i.imgur.com/IwtcgFm.png
         botemoji: boom
-        plugins: ./  # 'plugins' directory relative to config, or absolute
+        # plugins directory relative to config file, or absolute
+        # create empty __init__.py in that directory
+        plugins: ./myplugins
     """
     print('Usage: slackard <config.yaml>')
     print('\nExample YAML\n{}'.format(yaml_template))
