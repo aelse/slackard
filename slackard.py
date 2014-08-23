@@ -75,6 +75,8 @@ class Slackard(object):
 
     def _set_import_path(self):
         path = self._get_plugin_path()
+        # Use the parent directory of plugin path
+        path = os.path.dirname(path)
         if path not in sys.path:
             sys.path = [path] + sys.path
 
