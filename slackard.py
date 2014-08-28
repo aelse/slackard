@@ -259,7 +259,7 @@ def main():
         except SlackardFatalError as e:
             print('Fatal error: {}'.format(e.message))
             sys.exit(1)
-        except SlackNonFatalError as e:
+        except SlackardNonFatalError as e:
             print('Non-fatal error: {}'.format(e.message))
             delay = 5
             print('Delaying for {} seconds...'.format(delay))
