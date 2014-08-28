@@ -9,6 +9,14 @@ import time
 import yaml
 
 
+class SlackardFatalError(Exception):
+    pass
+
+
+class SlackardNonFatalError(Exception):
+    pass
+
+
 class Config(object):
     config = {}
 
