@@ -57,8 +57,15 @@ class Slackard(object):
 
     def _init_connection(self):
         self.slack = slacker.Slacker(self.apikey)
-        r = self.slack.channels.list(self.channel)
-        assert(r.successful)
+        try:
+            r = self.slack.channels.list()
+        except slacker.Error as e:
+            if e.message == 'invalid_auth':
+                raise SlackardFatalError('Invalid API key')
+            raise
+        except Exception as e:
+            raise SlackardNonFatalError(e.message)
+
         c_map = {c['name']: c['id'] for c in r.body['channels']}
         self.chan_id = c_map[self.channel]
 
@@ -104,7 +111,13 @@ class Slackard(object):
                 time.sleep(5.0 - delta_t)
             t0 = time.time()
 
-            messages = self._fetch_messages_since(ts)
+            try:
+                messages = self._fetch_messages_since(ts)
+            except Exception as e:
+                # Possibly an error we can recover from so raise
+                # a non-fatal exception and attempt to recover
+                raise SlackardNonFatalError(e.message)
+
             for message in messages:
                 ts = message['ts']
                 if 'text' in message:
@@ -171,7 +184,21 @@ class Slackard(object):
 
 def main():
     bot = Slackard('slackard.yaml')
-    bot.run()
+    while True:
+        try:
+            bot.run()
+        except SlackardFatalError as e:
+            print('Fatal error: {}'.format(e.message))
+            sys.exit(1)
+        except SlackNonFatalError as e:
+            print('Non-fatal error: {}'.format(e.message))
+            delay = 5
+            print('Delaying for {} seconds...'.format(delay))
+            time.sleep(delay)
+            bot._init_connection()
+        except Exception as e:
+            print('Unhandled exception: {}'.format(e.message))
+            sys.exit(1)
 
 
 if __name__ == '__main__':
