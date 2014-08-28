@@ -1,4 +1,4 @@
-from plugins import bot
+from . import bot
 
 
 @bot.subscribe('cookie')

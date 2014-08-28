@@ -5,3 +5,4 @@ slackard:
     botnick: slack  # short form name for commands.
     boticon: https://slack.global.ssl.fastly.net/8872/img/landing_slack_hash_wordmark_logo.png
     botemoji: boom
+    plugins: plugins

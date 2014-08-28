@@ -1,4 +1,4 @@
-from plugins import bot
+from . import bot
 import re
 
 @bot.firehose

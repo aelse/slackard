@@ -2,7 +2,10 @@
 
 from __future__ import print_function
 
+from glob import glob
 import functools
+import importlib
+import os.path
 import re
 import slacker
 import sys
@@ -22,6 +25,7 @@ class Config(object):
     config = {}
 
     def __init__(self, file_):
+        self.file = file_
         f = open(file_, 'r')
         y = yaml.load(f)
         f.close()
@@ -40,6 +44,7 @@ class Slackard(object):
         self.botname = self.config.slackard['botname']
         self.botnick = self.config.slackard['botnick']
         self.channel = self.config.slackard['channel']
+        self.plugins = self.config.slackard['plugins']
         try:
             self.boticon = self.config.slackard['boticon']
         except:
@@ -53,8 +58,34 @@ class Slackard(object):
         return 'I am a Slackard!'
 
     def _import_plugins(self):
-        import plugins
-        plugins.init_plugins(self)
+        self._set_import_path()
+        plugin_prefix = os.path.split(self.plugins)[-1]
+
+        # Import the plugins submodule (however named) and set the
+        # bot object in it to self
+        importlib.import_module(plugin_prefix)
+        sys.modules[plugin_prefix].bot = self
+
+        for plugin in glob('{}/[!_]*.py'.format(self._get_plugin_path())):
+            module = '.'.join((plugin_prefix, os.path.split(plugin)[-1][:-3]))
+            try:
+                importlib.import_module(module)
+            except Exception as e:
+                print('Failed to import {0}: {1}'.format(module, e))
+
+    def _get_plugin_path(self):
+        path = self.plugins
+        cf = self.config.file
+        if path[0] != '/':
+            path = os.path.join(os.path.dirname(os.path.realpath(cf)), path)
+        return path
+
+    def _set_import_path(self):
+        path = self._get_plugin_path()
+        # Use the parent directory of plugin path
+        path = os.path.dirname(path)
+        if path not in sys.path:
+            sys.path = [path] + sys.path
 
     def _init_connection(self):
         self.slack = slacker.Slacker(self.apikey)
@@ -183,8 +214,45 @@ class Slackard(object):
         return _f
 
 
+def usage():
+    yaml_template = """
+    slackard:
+        apikey: my_api_key_from-api.slack.com
+        channel: random
+        botname: Slackard
+        botnick: slack  # short form name for commands.
+        # Use either boticon or botemoji
+        boticon: http://i.imgur.com/IwtcgFm.png
+        botemoji: boom
+        # plugins directory relative to config file, or absolute
+        # create empty __init__.py in that directory
+        plugins: ./myplugins
+    """
+    print('Usage: slackard <config.yaml>')
+    print('\nExample YAML\n{}'.format(yaml_template))
+
+
 def main():
-    bot = Slackard('slackard.yaml')
+    config_file = None
+    try:
+        config_file = sys.argv[1]
+    except IndexError:
+        pass
+
+    if config_file is None:
+        usage()
+        sys.exit(1)
+
+    if not os.path.isfile(config_file):
+        print('Config file "{}" not found.'.format(config_file))
+        sys.exit(1)
+
+    try:
+        bot = Slackard(config_file)
+    except Exception as e:
+        print('Encountered error: {}'.format(e.message))
+        sys.exit(1)
+
     while True:
         try:
             bot.run()
