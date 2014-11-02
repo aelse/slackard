@@ -133,8 +133,11 @@ class Slackard(object):
                                  self.botnick), re.IGNORECASE)
         h = self.slack.channels.history(self.chan_id, count=1)
         assert(h.successful)
-        ts = h.body['messages'][0]['ts']
         t0 = time.time()
+        if len(h.body['messages']):
+            ts = h.body['messages'][0]['ts']
+        else:
+            ts = t0
 
         while True:
             t1 = time.time()
