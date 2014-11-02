@@ -117,11 +117,10 @@ class Slackard(object):
                                      icon_url=self.boticon)
 
     def upload(self, file, filename=None, title=None):
-        channels = self.chan_id
         if title is None:
             title = ''
         title = '{} (Upload by {})'.format(title, self.botname)
-        self.slack.files.upload(file, channels=channels,
+        self.slack.files.upload(file, channels=self.chan_id,
                                 filename=filename,
                                 title=title)
 
