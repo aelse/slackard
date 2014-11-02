@@ -126,10 +126,7 @@ class Slackard(object):
                                 title=title)
 
     def set_topic(self, topic):
-        channels = self.chan_id
-        if topic is None:
-            topic = ''
-        self.slack.channels.set_topic(channel=channels, topic=topic)
+        self.slack.channels.set_topic(channel=self.chan_id, topic=topic)
 
     def channel_info(self):
         info = self.slack.channels.info(channel=self.chan_id)
