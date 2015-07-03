@@ -108,13 +108,14 @@ class Slackard(object):
         messages.reverse()
         return [m for m in messages if m['ts'] != oldest]
 
-    def speak(self, message, paste=False):
+    def speak(self, message=None, paste=False, attachments=None):
         if paste:
             message = '```{0}```'.format(message)
         self.slack.chat.post_message(self.chan_id, message,
                                      username=self.botname,
                                      icon_emoji=self.botemoji,
-                                     icon_url=self.boticon)
+                                     icon_url=self.boticon,
+                                     attachments=attachments)
 
     def upload(self, file, filename=None, title=None):
         if title is None:
