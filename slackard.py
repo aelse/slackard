@@ -170,12 +170,12 @@ class Slackard(object):
                             continue
                     except KeyError:
                         pass
-                    print(message['text'])
+                    print(message)
                     for f in self.firehoses:
-                        f(message['text'])
+                        f(message)
                     for (f, matcher) in self.subscribers:
                         if matcher.search(message['text']):
-                            f(message['text'])
+                            f(message)
                     m = cmd_matcher.match(message['text'])
                     if m:
                         cmd, args = m.groups()
