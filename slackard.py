@@ -171,6 +171,7 @@ class Slackard(object):
                     except KeyError:
                         pass
                     print(message)
+                    # Plugins receive full message object in all invocations
                     for f in self.firehoses:
                         f(message)
                     for (f, matcher) in self.subscribers:
@@ -181,7 +182,7 @@ class Slackard(object):
                         cmd, args = m.groups()
                         for (f, command) in self.commands:
                             if command == cmd:
-                                f(args)
+                                f(args, message)
 
     def subscribe(self, pattern):
         if hasattr(pattern, '__call__'):
