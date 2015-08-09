@@ -20,6 +20,7 @@ listen for certain words, or even watch the entire channel conversation.
 Slackard provides decorators supporting 3 types of registration to suit your
 need. In all cases the only messages passed will be those not produced by
 the bot itself. This is to avoid getting stuck in message read-respond loops.
+A plugin always receives the complete message object (as of v2.0.0).
 
 Examples are included in the plugins directory.
 
@@ -32,7 +33,7 @@ subscribed to the command 'say'.
 
 ```python
 @bot.command('say')
-def command_say(args):
+def command_say(args, message):
     bot.speak('You asked me to say, "{0}"'.format(args))
 ```
 
