@@ -1,5 +1,7 @@
 # slackard
 
+**THIS PROJECT IS NO LONGER MAINTAINED**
+
 A Slack bot (slack.com)
 
 Slackard listens to the configured channel and is capable of responding to
